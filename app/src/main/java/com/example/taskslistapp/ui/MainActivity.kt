@@ -1,8 +1,8 @@
-package com.example.taskslistapp
+package com.example.taskslistapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import com.example.taskslistapp.R
 
 
 class MainActivity : AppCompatActivity() {

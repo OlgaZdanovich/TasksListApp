@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TasksListApp"
         tools:targetApi="31">
         <activity
-            android:name="com.example.taskslistapp.MainActivity"
+            android:name="com.example.taskslistapp.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
