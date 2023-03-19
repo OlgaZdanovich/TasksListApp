@@ -13,8 +13,10 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskslistapp.R
 import com.example.taskslistapp.data.SortOrder
+import com.example.taskslistapp.data.Task
 import com.example.taskslistapp.databinding.FragmentTaskBinding
 import com.example.taskslistapp.util.onQueryTextChanged
+
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,9 +25,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 
-class TasksFragment:Fragment(R.layout.fragment_task) {
+class TasksFragment:Fragment(R.layout.fragment_task), TasksAdapter.OnItemClickListener {
 
     private val viewModel: TasksViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +36,7 @@ class TasksFragment:Fragment(R.layout.fragment_task) {
 
         val binding = FragmentTaskBinding.bind(view)
 
-        val taskAdapter = TasksAdapter()
+        val taskAdapter = TasksAdapter(this)
 
         binding.apply {
             recyclerViewTasks.apply {
@@ -46,6 +49,13 @@ class TasksFragment:Fragment(R.layout.fragment_task) {
             taskAdapter.submitList(it)
         }
         setHasOptionsMenu(true)
+    }
+    override fun onItemClick(task: Task) {
+        viewModel.onTaskSelected(task)
+    }
+
+    override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckedChanged(task, isChecked)
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_fragment_tasks, menu)

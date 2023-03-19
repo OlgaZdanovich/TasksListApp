@@ -5,6 +5,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.taskslistapp.data.PreferencesManager
 import com.example.taskslistapp.data.SortOrder
+import com.example.taskslistapp.data.Task
 import com.example.taskslistapp.data.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 
@@ -34,6 +35,8 @@ class TasksViewModel @Inject constructor(
             taskDao.getTasks(query, filterPreferences.sortOrder, filterPreferences.hideCompleted)
         }
 
+    val tasks = tasksFlow.asLiveData()
+
     fun onSortOrderSelected(sortOrder: SortOrder) = viewModelScope.launch {
         preferencesManager.updateSortOrder(sortOrder)
     }
@@ -42,6 +45,12 @@ class TasksViewModel @Inject constructor(
         preferencesManager.updateHideCompleted(hideCompleted)
     }
 
-    val tasks = tasksFlow.asLiveData()
+    fun onTaskSelected(task: Task) {}
+
+    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch {
+        taskDao.update(task.copy(completed = isChecked))
+    }
+
+
 }
 
