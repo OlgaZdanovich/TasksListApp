@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.example.taskslistapp.R
 import com.example.taskslistapp.data.SortOrder
 import com.example.taskslistapp.data.Task
 import com.example.taskslistapp.databinding.FragmentTaskBinding
+import com.example.taskslistapp.util.exhaustive
 import com.example.taskslistapp.util.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 
@@ -63,6 +65,9 @@ class TasksFragment:Fragment(R.layout.fragment_task), TasksAdapter.OnItemClickLi
                     viewModel.onTaskSwiped(task)
                 }
             }).attachToRecyclerView(recyclerViewTasks)
+            fabAddTask.setOnClickListener {
+                viewModel.onAddNewTaskClick()
+            }
         }
         viewModel.tasks.observe(viewLifecycleOwner) {
             taskAdapter.submitList(it)
@@ -77,7 +82,16 @@ class TasksFragment:Fragment(R.layout.fragment_task), TasksAdapter.OnItemClickLi
                                 viewModel.onUndoDeleteClick(event.task)
                             }.show()
                     }
-                }
+                    is TasksViewModel.TasksEvent.NavigateToAddTaskScreen -> {
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditTaskFragment(null, "New Task")
+                        findNavController().navigate(action)
+                    }
+                    is TasksViewModel.TasksEvent.NavigateToEditTaskScreen -> {
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditTaskFragment(event.task, "Edit Task")
+                        findNavController().navigate(action)
+                    }
+                }.exhaustive
+
             }
         }
         setHasOptionsMenu(true)
